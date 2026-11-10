@@ -4,387 +4,323 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Pacific Meridian Hotel — Santa Monica, California</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gilda+Display&family=Jost:wght@400;500&display=swap" rel="stylesheet">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  color: #1e293b;
-  line-height: 1.6;
-  background: #f8fafc;
-}
-.hero {
-  background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)),
-    url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&q=80') center/cover no-repeat;
-  color: white;
-  padding: 120px 24px 100px;
-  text-align: center;
-}
-.hero h1 {
-  font-size: 56px;
-  font-weight: 300;
-  letter-spacing: 2px;
-  margin-bottom: 16px;
-}
-.hero p {
-  font-size: 20px;
-  font-weight: 300;
-  max-width: 640px;
-  margin: 0 auto 40px;
-  opacity: 0.95;
-}
-.buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-.btn {
-  display: inline-block;
-  padding: 14px 32px;
-  border-radius: 4px;
-  text-decoration: none;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  transition: all 0.2s;
-}
-.btn-primary { background: #0369a1; color: white; }
-.btn-primary:hover { background: #075985; }
-.btn-outline { background: transparent; color: white; border: 2px solid white; }
-.btn-outline:hover { background: white; color: #0369a1; }
+  :root{
+    --tide:#12324a;      /* deep tide navy */
+    --glass:#2f7f86;     /* sea glass teal */
+    --mist:#dfeceb;      /* pale surf */
+    --salt:#f8f6f1;      /* sea salt */
+    --dune:#b99a63;      /* dune gold */
+    --ink:#1d2a33;
+    --alert:#b3392f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Jost',system-ui,sans-serif;color:var(--ink);background:var(--salt);line-height:1.65;font-size:17px}
+  h1,h2,h3{font-family:'Gilda Display',Georgia,serif;font-weight:400;line-height:1.15;color:var(--tide)}
+  a{color:var(--glass)}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+  section{padding:88px 0}
+  section h2{font-size:clamp(30px,4vw,44px);margin-bottom:12px}
+  .lede{color:#51626d;max-width:56ch;margin-bottom:44px}
 
-section { padding: 80px 24px; }
-.container { max-width: 1100px; margin: 0 auto; }
-.section-title {
-  font-size: 32px;
-  font-weight: 300;
-  text-align: center;
-  margin-bottom: 16px;
-  color: #051B33;
-}
-.section-sub {
-  text-align: center;
-  color: #64748b;
-  margin-bottom: 48px;
-  font-size: 16px;
-}
+  /* header + hero */
+  header{position:absolute;inset:0 0 auto 0;z-index:5;padding:22px 0}
+  header .wrap{display:flex;justify-content:space-between;align-items:center}
+  header .logo{font-family:'Gilda Display',serif;color:#fff;font-size:22px;text-decoration:none}
+  header nav a{color:#e6f1f0;text-decoration:none;margin-left:26px;font-size:15px}
+  .hero{min-height:92vh;display:flex;align-items:flex-end;padding-top:150px;color:#fff;position:relative;overflow:hidden;
+    background:linear-gradient(180deg,#0e2a3f 0%,#12324a 45%,#2f7f86 100%)}
+  .hero .waves{position:absolute;left:0;bottom:0;width:100%;height:42%;z-index:2}
+  .hero .wrap{position:relative;z-index:2;padding-bottom:120px}
+  .hero h1{color:#fff;font-size:clamp(34px,5.2vw,64px);max-width:18ch;margin-bottom:18px}
+  .hero p{max-width:46ch;color:#dcecea;font-size:19px;margin-bottom:32px}
+  .btn{display:inline-block;padding:13px 26px;border-radius:2px;text-decoration:none;font-weight:500;font-size:15px;margin-right:10px}
+  .btn.solid{background:var(--salt);color:var(--tide)}
+  .btn.line{border:1px solid rgba(255,255,255,.65);color:#fff}
 
-.about { background: white; }
-.about p { max-width: 800px; margin: 0 auto; text-align: center; font-size: 17px; color: #475569; }
+  /* welcome / rooms */
+  .welcome p{max-width:62ch;margin-bottom:16px}
+  .rooms{background:var(--mist)}
+  .room-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:40px 32px}
+  .room img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;margin-bottom:16px;
+    background:linear-gradient(135deg,#9fc7c9,#2f7f86);color:#fff;font-size:14px}
+  .room h3{font-size:26px}
+  .room .price{color:var(--glass);font-weight:500;margin:2px 0 8px}
+  .room p{color:#51626d;font-size:16px}
 
-.rooms { background: #f1f5f9; }
-.room-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 28px;
-}
-.room-card {
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.room-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
-.room-card img { width: 100%; height: 200px; object-fit: cover; display: block; }
-.room-body { padding: 24px; }
-.room-body h3 { font-size: 20px; color: #051B33; margin-bottom: 8px; }
-.room-price { color: #0369a1; font-size: 24px; font-weight: 600; margin-bottom: 12px; }
-.room-price span { font-size: 14px; color: #64748b; font-weight: 400; }
-.room-body p { color: #64748b; font-size: 14px; }
+  /* amenities */
+  .amen{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #d9d4c8}
+  .amen div{padding:24px 16px 24px 0;border-bottom:1px solid #d9d4c8}
+  .amen span{font-size:24px;display:block;margin-bottom:6px}
+  .amen b{display:block;font-weight:500;color:var(--tide)}
+  .amen small{color:#51626d;font-size:14px}
 
-.amenities { background: white; }
-.amenity-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 24px;
-  max-width: 900px;
-  margin: 0 auto;
-}
-.amenity {
-  text-align: center;
-  padding: 24px 16px;
-  border-radius: 8px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-}
-.amenity-icon { font-size: 32px; margin-bottom: 12px; }
-.amenity h4 { font-size: 15px; color: #051B33; font-weight: 600; margin-bottom: 4px; }
-.amenity p { font-size: 13px; color: #64748b; }
+  /* location + policies */
+  .location{background:var(--tide);color:#dbe9e8}
+  .location h2,.location h3{color:#fff}
+  .location h3{font-size:24px;margin-bottom:14px;font-family:'Jost',sans-serif;font-weight:500}
+  .location p{max-width:58ch;margin-bottom:14px}
+  .location a{color:#9bd0d2}
+  .pol-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+  .pol h4{font-family:'Gilda Display',serif;font-weight:400;font-size:21px;color:var(--tide);margin-bottom:6px}
+  .pol p{font-size:15.5px;color:#51626d}
 
-.location { background: #051B33; color: white; }
-.location .section-title { color: white; }
-.location .section-sub { color: #94a3b8; }
-.location-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: center;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-.location-text h3 { font-size: 22px; font-weight: 400; margin-bottom: 16px; }
-.location-text p { color: #cbd5e1; margin-bottom: 16px; }
-.location-text a { color: #7dd3fc; text-decoration: none; }
-.location-text a:hover { text-decoration: underline; }
-.map-placeholder {
-  background: #0f2a4a;
-  padding: 60px 24px;
-  border-radius: 8px;
-  text-align: center;
-  color: #94a3b8;
-  border: 1px solid #1e3a5f;
-}
+  /* contact */
+  .contact{background:var(--mist)}
+  .contact dl{display:grid;grid-template-columns:120px 1fr;gap:10px 16px;margin-top:28px;max-width:520px}
+  .contact dt{font-weight:500;color:var(--tide)}
+  footer{background:var(--tide);color:#b8cfd0;padding:32px 0 120px;font-size:14px}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  footer a{color:#b8cfd0;margin-left:14px}
 
-.policies { background: #f8fafc; }
-.policies-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 32px;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-.policy h4 { color: #051B33; margin-bottom: 8px; font-size: 16px; }
-.policy p { color: #64748b; font-size: 14px; }
+  /* ===== AI receptionist buttons ===== */
+  .agent-fab{position:fixed;right:24px;bottom:24px;display:flex;gap:12px;z-index:9998}
+  .agent-fab button{display:flex;align-items:center;gap:10px;border:0;cursor:pointer;color:#fff;
+    font:500 15px 'Jost',sans-serif;padding:14px 22px;border-radius:999px;
+    box-shadow:0 6px 20px rgba(18,50,74,.28);transition:background .2s,transform .15s}
+  .agent-fab button:hover{transform:translateY(-2px)}
+  .agent-fab button:focus-visible{outline:3px solid var(--dune);outline-offset:3px}
+  .agent-fab svg{width:20px;height:20px;flex:none}
+  #callBtn{background:var(--glass)}
+  #callBtn.connecting{background:#6a9fa4;cursor:wait}
+  #callBtn.active{background:var(--alert)}
+  #callBtn.active svg{animation:ring 1.4s ease-in-out infinite}
+  #chatBtn{background:var(--tide)}
+  @keyframes ring{0%,100%{transform:rotate(0)}25%{transform:rotate(-14deg)}75%{transform:rotate(14deg)}}
+  #agentStatus{position:fixed;right:24px;bottom:88px;z-index:9998;background:var(--tide);color:#fff;
+    font-size:14px;padding:10px 16px;border-radius:8px;display:none;max-width:280px}
 
-.contact { background: white; text-align: center; }
-.contact-methods { display: flex; gap: 48px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
-.contact-methods div { text-align: center; }
-.contact-methods strong { display: block; color: #051B33; margin-bottom: 4px; }
-.contact-methods a { color: #0369a1; text-decoration: none; font-size: 18px; }
-.contact-methods a:hover { text-decoration: underline; }
+  /* Hide the Retell chat widget's own floating bubble (JS adds this class) */
+  .hide-launcher{visibility:hidden !important;pointer-events:none !important}
 
-footer {
-  background: #051B33;
-  color: #94a3b8;
-  text-align: center;
-  padding: 32px 24px;
-  font-size: 14px;
-}
-footer a { color: #7dd3fc; text-decoration: none; }
-
-@media (max-width: 768px) {
-  .hero h1 { font-size: 36px; }
-  .hero p { font-size: 17px; }
-  .location-content { grid-template-columns: 1fr; }
-}
+  @media (prefers-reduced-motion:reduce){#callBtn.active svg{animation:none}.agent-fab button{transition:none}html{scroll-behavior:auto}}
+  @media (max-width:760px){
+    section{padding:64px 0}
+    header nav{display:none}
+    .room-grid,.pol-grid{grid-template-columns:1fr}
+    .amen{grid-template-columns:repeat(2,1fr)}
+    .agent-fab{right:14px;bottom:14px;flex-direction:column;align-items:flex-end;gap:10px}
+    #agentStatus{right:14px;bottom:130px}
+  }
 </style>
 </head>
 <body>
 
-<section class="hero">
-  <h1>The Pacific Meridian</h1>
-  <p>A boutique coastal retreat in the heart of Santa Monica, California. Where the Pacific meets timeless elegance.</p>
-  <div class="buttons">
-    <a href="#rooms" class="btn btn-primary">View Rooms</a>
-    <a href="#contact" class="btn btn-outline">Talk to Receptionist</a>
+<header>
+  <div class="wrap">
+    <a class="logo" href="#">The Pacific Meridian</a>
+    <nav><a href="#rooms">Rooms</a><a href="#location">Location</a><a href="#contact">Contact</a></nav>
   </div>
-</section>
+</header>
 
-<section class="about">
-  <div class="container">
-    <h2 class="section-title">Welcome to the Pacific Meridian</h2>
-    <p class="section-sub">Ocean views. Thoughtful service. A short walk from the sand.</p>
-    <p>
-      The Pacific Meridian Hotel offers 48 individually designed rooms and suites,
-      each with its own character. Located on Ocean Avenue, we are a five-minute
-      stroll from the Santa Monica Pier and just steps from the beach. Whether you
-      are visiting for business, a weekend escape, or a longer coastal stay, our
-      team is here to make your time with us effortless.
-    </p>
+<main>
+<div class="hero">
+  <svg class="waves" viewBox="0 0 1440 300" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 160 C240 80 480 240 720 160 S1200 80 1440 170 V300 H0Z" fill="#f8f6f1" fill-opacity=".14"/>
+    <path d="M0 210 C260 150 520 270 780 205 S1220 150 1440 220 V300 H0Z" fill="#f8f6f1" fill-opacity=".28"/>
+    <path d="M0 260 C300 220 560 290 840 250 S1240 230 1440 265 V300 H0Z" fill="#f8f6f1"/>
+  </svg>
+  <div class="wrap">
+    <h1>Where the Pacific meets timeless elegance</h1>
+    <p>A boutique coastal retreat in the heart of Santa Monica, California.</p>
+    <a class="btn solid" href="#rooms">View Rooms</a>
+    <a class="btn line" href="#contact">Talk to Receptionist</a>
   </div>
-</section>
-<section class="rooms" id="rooms">
-  <div class="container">
-    <h2 class="section-title">Our Rooms</h2>
-    <p class="section-sub">Four room types, each with its own coastal character.</p>
-    <div class="room-grid">
+</div>
 
-      <div class="room-card">
-        <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80" alt="Standard Twin Room">
-        <div class="room-body">
-          <h3>Standard Twin</h3>
-          <div class="room-price">$250 <span>/ night</span></div>
-          <p>Two twin beds, city view, 28 square meters. Perfect for friends or colleagues traveling together.</p>
-        </div>
-      </div>
+<section class="welcome"><div class="wrap">
+  <h2>Welcome to the Pacific Meridian</h2>
+  <p class="lede">Ocean views. Thoughtful service. A short walk from the sand.</p>
+  <p>The Pacific Meridian Hotel offers 48 individually designed rooms and suites, each with its own character. Located on Ocean Avenue, we are a five-minute stroll from the Santa Monica Pier and just steps from the beach. Whether you are visiting for business, a weekend escape, or a longer coastal stay, our team is here to make your time with us effortless.</p>
+</div></section>
 
-      <div class="room-card">
-        <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80" alt="Deluxe Queen Room">
-        <div class="room-body">
-          <h3>Deluxe Queen</h3>
-          <div class="room-price">$350 <span>/ night</span></div>
-          <p>One queen bed, partial ocean view, 34 square meters. A comfortable choice for couples.</p>
-        </div>
-      </div>
-
-      <div class="room-card">
-        <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&q=80" alt="Ocean View King Room">
-        <div class="room-body">
-          <h3>Ocean View King</h3>
-          <div class="room-price">$450 <span>/ night</span></div>
-          <p>One king bed, full ocean view, 40 square meters. Wake up to the Pacific every morning.</p>
-        </div>
-      </div>
-
-      <div class="room-card">
-        <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80" alt="Garden Suite">
-        <div class="room-body">
-          <h3>Garden Suite</h3>
-          <div class="room-price">$550 <span>/ night</span></div>
-          <p>Separate living area, private garden terrace, 58 square meters. Our most spacious accommodation.</p>
-        </div>
-      </div>
-
-    </div>
+<section class="rooms" id="rooms"><div class="wrap">
+  <h2>Our Rooms</h2>
+  <p class="lede">Four room types, each with its own coastal character.</p>
+  <div class="room-grid">
+    <article class="room">
+      <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80" alt="Standard Twin Room" referrerpolicy="no-referrer">
+      <h3>Standard Twin</h3><div class="price">$250 / night</div>
+      <p>Two twin beds, city view, 28 square meters. Perfect for friends or colleagues traveling together.</p>
+    </article>
+    <article class="room">
+      <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80" alt="Deluxe Queen Room" referrerpolicy="no-referrer">
+      <h3>Deluxe Queen</h3><div class="price">$350 / night</div>
+      <p>One queen bed, partial ocean view, 34 square meters. A comfortable choice for couples.</p>
+    </article>
+    <article class="room">
+      <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&q=80" alt="Ocean View King Room" referrerpolicy="no-referrer">
+      <h3>Ocean View King</h3><div class="price">$450 / night</div>
+      <p>One king bed, full ocean view, 40 square meters. Wake up to the Pacific every morning.</p>
+    </article>
+    <article class="room">
+      <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80" alt="Garden Suite" referrerpolicy="no-referrer">
+      <h3>Garden Suite</h3><div class="price">$550 / night</div>
+      <p>Separate living area, private garden terrace, 58 square meters. Our most spacious accommodation.</p>
+    </article>
   </div>
-</section>
+</div></section>
 
-<section class="amenities">
-  <div class="container">
-    <h2 class="section-title">Amenities</h2>
-    <p class="section-sub">Everything you need for a comfortable stay.</p>
-    <div class="amenity-grid">
-      <div class="amenity">
-        <div class="amenity-icon">📶</div>
-        <h4>High-Speed Wi-Fi</h4>
-        <p>Complimentary throughout</p>
-      </div>
-      <div class="amenity">
-        <div class="amenity-icon">🏊</div>
-        <h4>Heated Pool</h4>
-        <p>Open 6am – 10pm daily</p>
-      </div>
-      <div class="amenity">
-        <div class="amenity-icon">💆</div>
-        <h4>Spa & Wellness</h4>
-        <p>Massage and treatments</p>
-      </div>
-      <div class="amenity">
-        <div class="amenity-icon">🍽️</div>
-        <h4>Coastal Restaurant</h4>
-        <p>Breakfast, lunch, dinner</p>
-      </div>
-      <div class="amenity">
-        <div class="amenity-icon">🚗</div>
-        <h4>Valet Parking</h4>
-        <p>$35 per night</p>
-      </div>
-      <div class="amenity">
-        <div class="amenity-icon">🏖️</div>
-        <h4>Beach Access</h4>
-        <p>Direct path to the sand</p>
-      </div>
-      <div class="amenity">
-        <div class="amenity-icon">💪</div>
-        <h4>Fitness Center</h4>
-        <p>Open 24 hours</p>
-      </div>
-      <div class="amenity">
-        <div class="amenity-icon">🐕</div>
-        <h4>Pet Friendly</h4>
-        <p>Up to 25 lbs</p>
-      </div>
-    </div>
+<section class="amenities"><div class="wrap">
+  <h2>Amenities</h2>
+  <p class="lede">Everything you need for a comfortable stay.</p>
+  <div class="amen">
+    <div><span>📶</span><b>High-Speed Wi-Fi</b><small>Complimentary throughout</small></div>
+    <div><span>🏊</span><b>Heated Pool</b><small>Open 6am – 10pm daily</small></div>
+    <div><span>💆</span><b>Spa &amp; Wellness</b><small>Massage and treatments</small></div>
+    <div><span>🍽️</span><b>Coastal Restaurant</b><small>Breakfast, lunch, dinner</small></div>
+    <div><span>🚗</span><b>Valet Parking</b><small>$35 per night</small></div>
+    <div><span>🏖️</span><b>Beach Access</b><small>Direct path to the sand</small></div>
+    <div><span>💪</span><b>Fitness Center</b><small>Open 24 hours</small></div>
+    <div><span>🐕</span><b>Pet Friendly</b><small>Up to 25 lbs</small></div>
   </div>
-</section>
+</div></section>
 
-<section class="location">
-  <div class="container">
-    <h2 class="section-title">Location</h2>
-    <p class="section-sub">Steps from the beach, minutes from everything.</p>
-    <div class="location-content">
-      <div class="location-text">
-        <h3>1234 Ocean Avenue<br>Santa Monica, CA 90401</h3>
-        <p>
-          We are located on Ocean Avenue, directly across from Palisades Park
-          and a five-minute walk from the Santa Monica Pier. Los Angeles
-          International Airport (LAX) is approximately 20 minutes by car.
-        </p>
-        <p>
-          <a href="https://maps.google.com/?q=1234+Ocean+Ave+Santa+Monica+CA" target="_blank">Get directions →</a>
-        </p>
-      </div>
-      <div class="map-placeholder">
-        <p>📍 Palisades Park · Santa Monica Pier · Third Street Promenade</p>
-      </div>
-    </div>
+<section class="location" id="location"><div class="wrap">
+  <h2>Location</h2>
+  <p class="lede" style="color:#b8cfd0">Steps from the beach, minutes from everything.</p>
+  <h3>1234 Ocean Avenue, Santa Monica, CA 90401</h3>
+  <p>We are located on Ocean Avenue, directly across from Palisades Park and a five-minute walk from the Santa Monica Pier. Los Angeles International Airport (LAX) is approximately 20 minutes by car.</p>
+  <p><a href="https://maps.google.com/?q=1234+Ocean+Ave+Santa+Monica+CA">Get directions</a></p>
+  <p>Nearby: Palisades Park, Santa Monica Pier, Third Street Promenade</p>
+</div></section>
+
+<section class="policies"><div class="wrap">
+  <h2>Hotel Policies</h2>
+  <p class="lede">A few things to know before you arrive.</p>
+  <div class="pol-grid">
+    <div class="pol"><h4>Check-in / check-out</h4><p>Check-in from 3:00 PM. Check-out by 11:00 AM. Early check-in and late check-out available on request.</p></div>
+    <div class="pol"><h4>Cancellation</h4><p>Free cancellation up to 48 hours before arrival. Cancellations within 48 hours are charged one night's stay.</p></div>
+    <div class="pol"><h4>Pets</h4><p>Well-behaved pets up to 25 lbs are welcome. A one-time cleaning fee of $75 applies.</p></div>
+    <div class="pol"><h4>Smoking</h4><p>The Pacific Meridian is a non-smoking property. A $250 cleaning fee applies to violations.</p></div>
+    <div class="pol"><h4>Parking</h4><p>Valet parking available at $35 per night. Self-parking is not available on-site.</p></div>
+    <div class="pol"><h4>Children</h4><p>Children of all ages welcome. Cribs and rollaway beds available on request at no additional charge.</p></div>
   </div>
-</section>
-<section class="policies">
-  <div class="container">
-    <h2 class="section-title">Hotel Policies</h2>
-    <p class="section-sub">A few things to know before you arrive.</p>
-    <div class="policies-grid">
-      <div class="policy">
-        <h4>Check-In / Check-Out</h4>
-        <p>Check-in from 3:00 PM. Check-out by 11:00 AM. Early check-in and late check-out available on request.</p>
-      </div>
-      <div class="policy">
-        <h4>Cancellation</h4>
-        <p>Free cancellation up to 48 hours before arrival. Cancellations within 48 hours are charged one night's stay.</p>
-      </div>
-      <div class="policy">
-        <h4>Pets</h4>
-        <p>Well-behaved pets up to 25 lbs are welcome. A one-time cleaning fee of $75 applies.</p>
-      </div>
-      <div class="policy">
-        <h4>Smoking</h4>
-        <p>The Pacific Meridian is a non-smoking property. A $250 cleaning fee applies to violations.</p>
-      </div>
-      <div class="policy">
-        <h4>Parking</h4>
-        <p>Valet parking available at $35 per night. Self-parking is not available on-site.</p>
-      </div>
-      <div class="policy">
-        <h4>Children</h4>
-        <p>Children of all ages welcome. Cribs and rollaway beds available on request at no additional charge.</p>
-      </div>
-    </div>
-  </div>
-</section>
+</div></section>
 
-<section class="contact" id="contact">
-  <div class="container">
-    <h2 class="section-title">Get in Touch</h2>
-    <p class="section-sub">Call us, or talk to our AI receptionist right now.</p>
-    <div class="contact-methods">
-      <div>
-        <strong>Phone</strong>
-        <a href="tel:+13105550100">(310) 555-0100</a>
-      </div>
-      <div>
-        <strong>Email</strong>
-        <a href="mailto:hello@pacificmeridian.com">hello@pacificmeridian.com</a>
-      </div>
-      <div>
-        <strong>Address</strong>
-        <span style="color: #475569;">1234 Ocean Ave, Santa Monica, CA</span>
-      </div>
-    </div>
-  </div>
-</section>
+<section class="contact" id="contact"><div class="wrap">
+  <h2>Get in Touch</h2>
+  <p class="lede">Call us, or talk to our AI receptionist right now using the buttons at the bottom right of the page.</p>
+  <dl>
+    <dt>Phone</dt><dd><a href="tel:+13105550100">(310) 555-0100</a></dd>
+    <dt>Email</dt><dd><a href="mailto:hello@pacificmeridian.com">hello@pacificmeridian.com</a></dd>
+    <dt>Address</dt><dd>1234 Ocean Ave, Santa Monica, CA</dd>
+  </dl>
+</div></section>
+</main>
 
-<footer>
-  <p>&copy; 2026 The Pacific Meridian Hotel. All rights reserved.</p>
-  <p style="margin-top: 8px;">
-    <a href="#rooms">Rooms</a> &nbsp;·&nbsp;
-    <a href="#contact">Contact</a> &nbsp;·&nbsp;
-    <a href="mailto:hello@pacificmeridian.com">hello@pacificmeridian.com</a>
-  </p>
-</footer>
+<footer><div class="wrap">
+  <span>© 2026 The Pacific Meridian Hotel. All rights reserved.</span>
+  <span><a href="#rooms">Rooms</a><a href="#contact">Contact</a><a href="mailto:hello@pacificmeridian.com">hello@pacificmeridian.com</a></span>
+</div></footer>
 
-<!-- ============================================
-     RETELL OFFICIAL WIDGET (Voice + Chat Hybrid)
-     ============================================ -->
+<!-- ===== Custom AI receptionist buttons ===== -->
+<div id="agentStatus" role="status" aria-live="polite"></div>
+<div class="agent-fab">
+  <button id="callBtn" type="button" onclick="startVoiceCall()" aria-label="Call Reception">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+    <span id="callLabel">Call Reception</span>
+  </button>
+  <button id="chatBtn" type="button" onclick="openChat()" aria-label="Chat with Us">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span>Chat with Us</span>
+  </button>
+</div>
+
+<!-- ===== Chat: Retell chat widget, default bubble hidden ===== -->
 <script
-    id="retell-widget"
-    src="https://dashboard.retellai.com/retell-widget-v2.js"
-    type="module"
-    data-public-key="public_key_48fb86f66d6fa30ca4e49"
-    data-voice-public-key="public_key_48fb86f66d6fa30ca4e49"
-    data-agent-id="agent_20fb6a915440360e4472698b77"
-    data-voice-agent-id="agent_71a4fbab2c00f761ae7054b81b"
-    data-fab-text="Need help?"
-    data-title="Pacific Meridian Receptionist"
-    data-color="#0369a1"
-></script>
+  id="chat-widget-loader"
+  src="https://dashboard.retellai.com/retell-widget.js"
+  type="module"
+  data-public-key="public_key_48fb86f66d6fa30ca4e49"
+  data-agent-id="agent_20fb6a915440360e4472698b77"
+  data-title="Pacific Meridian Reception"
+  data-bot-name="Reception"
+  data-color="#12324a"
+  data-show-ai-popup="false"
+  data-auto-open="false"></script>
 
+<script>
+  // Finds the widget's own floating bubble and hides it, so only our button is visible.
+  let widgetLauncher = null;
+
+  function findWidgetLauncher() {
+    const roots = document.querySelectorAll('[id*="retell" i], [class*="retell" i]');
+    for (const root of roots) {
+      const scope = root.shadowRoot || root;
+      const btn = scope.matches && scope.matches('button,[role="button"]')
+        ? scope : scope.querySelector('button,[role="button"]');
+      if (btn) return btn;
+    }
+    return null;
+  }
+
+  function hideWidgetLauncher() {
+    if (widgetLauncher) return;
+    const btn = findWidgetLauncher();
+    if (btn) { widgetLauncher = btn; btn.classList.add('hide-launcher'); btn.style.setProperty('visibility', 'hidden', 'important'); }
+  }
+
+  new MutationObserver(hideWidgetLauncher).observe(document.documentElement, { childList: true, subtree: true });
+  window.addEventListener('load', () => setTimeout(hideWidgetLauncher, 800));
+
+  function openChat() {
+    hideWidgetLauncher();
+    if (widgetLauncher) widgetLauncher.click();
+    else console.warn('Chat widget has not loaded yet or its button could not be found.');
+  }
+</script>
+
+<!-- ===== Voice: Retell Web SDK ===== -->
+<script type="module">
+  import { RetellWebClient } from "https://esm.sh/retell-client-js-sdk";
+
+  const retell = new RetellWebClient();
+  const btn = document.getElementById('callBtn');
+  const label = document.getElementById('callLabel');
+  const statusEl = document.getElementById('agentStatus');
+  let state = 'idle'; // idle | connecting | active
+
+  function setState(next) {
+    state = next;
+    btn.classList.toggle('connecting', next === 'connecting');
+    btn.classList.toggle('active', next === 'active');
+    label.textContent = next === 'active' ? 'End Call' : next === 'connecting' ? 'Connecting…' : 'Call Reception';
+    btn.setAttribute('aria-label', label.textContent);
+  }
+
+  function notify(msg) {
+    statusEl.textContent = msg;
+    statusEl.style.display = 'block';
+    setTimeout(() => (statusEl.style.display = 'none'), 5000);
+  }
+
+  async function startVoiceCall() {
+    if (state === 'connecting') return;
+    if (state === 'active') { retell.stopCall(); return; }
+
+    setState('connecting');
+    try {
+      const res = await fetch('/api/create-call', { method: 'POST' });
+      if (!res.ok) throw new Error('Token request failed (' + res.status + ')');
+      const { access_token } = await res.json();
+      await retell.startCall({ accessToken: access_token });
+    } catch (err) {
+      console.error(err);
+      setState('idle');
+      notify('Could not start the call. Please allow microphone access and try again.');
+    }
+  }
+
+  retell.on('call_started', () => setState('active'));
+  retell.on('call_ended', () => setState('idle'));
+  retell.on('error', (err) => { console.error(err); retell.stopCall(); setState('idle'); notify('The call ended unexpectedly.'); });
+
+  window.startVoiceCall = startVoiceCall;
+</script>
 </body>
 </html>
