@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Pacific Meridian Hotel — Santa Monica, California</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #1e293b;
+  line-height: 1.6;
+  background: #f8fafc;
+}
+.hero {
+  background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)),
+    url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&q=80') center/cover no-repeat;
+  color: white;
+  padding: 120px 24px 100px;
+  text-align: center;
+}
+.hero h1 {
+  font-size: 56px;
+  font-weight: 300;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+.hero p {
+  font-size: 20px;
+  font-weight: 300;
+  max-width: 640px;
+  margin: 0 auto 40px;
+  opacity: 0.95;
+}
+.buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.btn {
+  display: inline-block;
+  padding: 14px 32px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+.btn-primary { background: #0369a1; color: white; }
+.btn-primary:hover { background: #075985; }
+.btn-outline { background: transparent; color: white; border: 2px solid white; }
+.btn-outline:hover { background: white; color: #0369a1; }
+
+section { padding: 80px 24px; }
+.container { max-width: 1100px; margin: 0 auto; }
+.section-title {
+  font-size: 32px;
+  font-weight: 300;
+  text-align: center;
+  margin-bottom: 16px;
+  color: #051B33;
+}
+.section-sub {
+  text-align: center;
+  color: #64748b;
+  margin-bottom: 48px;
+  font-size: 16px;
+}
+
+.about { background: white; }
+.about p { max-width: 800px; margin: 0 auto; text-align: center; font-size: 17px; color: #475569; }
+
+.rooms { background: #f1f5f9; }
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 28px;
+}
+.room-card {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.room-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+.room-card img { width: 100%; height: 200px; object-fit: cover; display: block; }
+.room-body { padding: 24px; }
+.room-body h3 { font-size: 20px; color: #051B33; margin-bottom: 8px; }
+.room-price { color: #0369a1; font-size: 24px; font-weight: 600; margin-bottom: 12px; }
+.room-price span { font-size: 14px; color: #64748b; font-weight: 400; }
+.room-body p { color: #64748b; font-size: 14px; }
+
+.amenities { background: white; }
+.amenity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.amenity {
+  text-align: center;
+  padding: 24px 16px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+.amenity-icon { font-size: 32px; margin-bottom: 12px; }
+.amenity h4 { font-size: 15px; color: #051B33; font-weight: 600; margin-bottom: 4px; }
+.amenity p { font-size: 13px; color: #64748b; }
+
+.location { background: #051B33; color: white; }
+.location .section-title { color: white; }
+.location .section-sub { color: #94a3b8; }
+.location-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.location-text h3 { font-size: 22px; font-weight: 400; margin-bottom: 16px; }
+.location-text p { color: #cbd5e1; margin-bottom: 16px; }
+.location-text a { color: #7dd3fc; text-decoration: none; }
+.location-text a:hover { text-decoration: underline; }
+.map-placeholder {
+  background: #0f2a4a;
+  padding: 60px 24px;
+  border-radius: 8px;
+  text-align: center;
+  color: #94a3b8;
+  border: 1px solid #1e3a5f;
+}
+
+.policies { background: #f8fafc; }
+.policies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 32px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.policy h4 { color: #051B33; margin-bottom: 8px; font-size: 16px; }
+.policy p { color: #64748b; font-size: 14px; }
+
+.contact { background: white; text-align: center; }
+.contact-methods { display: flex; gap: 48px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+.contact-methods div { text-align: center; }
+.contact-methods strong { display: block; color: #051B33; margin-bottom: 4px; }
+.contact-methods a { color: #0369a1; text-decoration: none; font-size: 18px; }
+.contact-methods a:hover { text-decoration: underline; }
+
+footer {
+  background: #051B33;
+  color: #94a3b8;
+  text-align: center;
+  padding: 32px 24px;
+  font-size: 14px;
+}
+footer a { color: #7dd3fc; text-decoration: none; }
+
+@media (max-width: 768px) {
+  .hero h1 { font-size: 36px; }
+  .hero p { font-size: 17px; }
+  .location-content { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <h1>The Pacific Meridian</h1>
+  <p>A boutique coastal retreat in the heart of Santa Monica, California. Where the Pacific meets timeless elegance.</p>
+  <div class="buttons">
+    <a href="#rooms" class="btn btn-primary">View Rooms</a>
+    <a href="#contact" class="btn btn-outline">Talk to Receptionist</a>
+  </div>
+</section>
+
+<section class="about">
+  <div class="container">
+    <h2 class="section-title">Welcome to the Pacific Meridian</h2>
+    <p class="section-sub">Ocean views. Thoughtful service. A short walk from the sand.</p>
+    <p>
+      The Pacific Meridian Hotel offers 48 individually designed rooms and suites,
+      each with its own character. Located on Ocean Avenue, we are a five-minute
+      stroll from the Santa Monica Pier and just steps from the beach. Whether you
+      are visiting for business, a weekend escape, or a longer coastal stay, our
+      team is here to make your time with us effortless.
+    </p>
+  </div>
+</section>
+<section class="rooms" id="rooms">
+  <div class="container">
+    <h2 class="section-title">Our Rooms</h2>
+    <p class="section-sub">Four room types, each with its own coastal character.</p>
+    <div class="room-grid">
+
+      <div class="room-card">
+        <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80" alt="Standard Twin Room">
+        <div class="room-body">
+          <h3>Standard Twin</h3>
+          <div class="room-price">$250 <span>/ night</span></div>
+          <p>Two twin beds, city view, 28 square meters. Perfect for friends or colleagues traveling together.</p>
+        </div>
+      </div>
+
+      <div class="room-card">
+        <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80" alt="Deluxe Queen Room">
+        <div class="room-body">
+          <h3>Deluxe Queen</h3>
+          <div class="room-price">$350 <span>/ night</span></div>
+          <p>One queen bed, partial ocean view, 34 square meters. A comfortable choice for couples.</p>
+        </div>
+      </div>
+
+      <div class="room-card">
+        <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&q=80" alt="Ocean View King Room">
+        <div class="room-body">
+          <h3>Ocean View King</h3>
+          <div class="room-price">$450 <span>/ night</span></div>
+          <p>One king bed, full ocean view, 40 square meters. Wake up to the Pacific every morning.</p>
+        </div>
+      </div>
+
+      <div class="room-card">
+        <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80" alt="Garden Suite">
+        <div class="room-body">
+          <h3>Garden Suite</h3>
+          <div class="room-price">$550 <span>/ night</span></div>
+          <p>Separate living area, private garden terrace, 58 square meters. Our most spacious accommodation.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="amenities">
+  <div class="container">
+    <h2 class="section-title">Amenities</h2>
+    <p class="section-sub">Everything you need for a comfortable stay.</p>
+    <div class="amenity-grid">
+      <div class="amenity">
+        <div class="amenity-icon">📶</div>
+        <h4>High-Speed Wi-Fi</h4>
+        <p>Complimentary throughout</p>
+      </div>
+      <div class="amenity">
+        <div class="amenity-icon">🏊</div>
+        <h4>Heated Pool</h4>
+        <p>Open 6am – 10pm daily</p>
+      </div>
+      <div class="amenity">
+        <div class="amenity-icon">💆</div>
+        <h4>Spa & Wellness</h4>
+        <p>Massage and treatments</p>
+      </div>
+      <div class="amenity">
+        <div class="amenity-icon">🍽️</div>
+        <h4>Coastal Restaurant</h4>
+        <p>Breakfast, lunch, dinner</p>
+      </div>
+      <div class="amenity">
+        <div class="amenity-icon">🚗</div>
+        <h4>Valet Parking</h4>
+        <p>$35 per night</p>
+      </div>
+      <div class="amenity">
+        <div class="amenity-icon">🏖️</div>
+        <h4>Beach Access</h4>
+        <p>Direct path to the sand</p>
+      </div>
+      <div class="amenity">
+        <div class="amenity-icon">💪</div>
+        <h4>Fitness Center</h4>
+        <p>Open 24 hours</p>
+      </div>
+      <div class="amenity">
+        <div class="amenity-icon">🐕</div>
+        <h4>Pet Friendly</h4>
+        <p>Up to 25 lbs</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="location">
+  <div class="container">
+    <h2 class="section-title">Location</h2>
+    <p class="section-sub">Steps from the beach, minutes from everything.</p>
+    <div class="location-content">
+      <div class="location-text">
+        <h3>1234 Ocean Avenue<br>Santa Monica, CA 90401</h3>
+        <p>
+          We are located on Ocean Avenue, directly across from Palisades Park
+          and a five-minute walk from the Santa Monica Pier. Los Angeles
+          International Airport (LAX) is approximately 20 minutes by car.
+        </p>
+        <p>
+          <a href="https://maps.google.com/?q=1234+Ocean+Ave+Santa+Monica+CA" target="_blank">Get directions →</a>
+        </p>
+      </div>
+      <div class="map-placeholder">
+        <p>📍 Palisades Park · Santa Monica Pier · Third Street Promenade</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="policies">
+  <div class="container">
+    <h2 class="section-title">Hotel Policies</h2>
+    <p class="section-sub">A few things to know before you arrive.</p>
+    <div class="policies-grid">
+      <div class="policy">
+        <h4>Check-In / Check-Out</h4>
+        <p>Check-in from 3:00 PM. Check-out by 11:00 AM. Early check-in and late check-out available on request.</p>
+      </div>
+      <div class="policy">
+        <h4>Cancellation</h4>
+        <p>Free cancellation up to 48 hours before arrival. Cancellations within 48 hours are charged one night's stay.</p>
+      </div>
+      <div class="policy">
+        <h4>Pets</h4>
+        <p>Well-behaved pets up to 25 lbs are welcome. A one-time cleaning fee of $75 applies.</p>
+      </div>
+      <div class="policy">
+        <h4>Smoking</h4>
+        <p>The Pacific Meridian is a non-smoking property. A $250 cleaning fee applies to violations.</p>
+      </div>
+      <div class="policy">
+        <h4>Parking</h4>
+        <p>Valet parking available at $35 per night. Self-parking is not available on-site.</p>
+      </div>
+      <div class="policy">
+        <h4>Children</h4>
+        <p>Children of all ages welcome. Cribs and rollaway beds available on request at no additional charge.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="container">
+    <h2 class="section-title">Get in Touch</h2>
+    <p class="section-sub">Call us, or talk to our AI receptionist right now.</p>
+    <div class="contact-methods">
+      <div>
+        <strong>Phone</strong>
+        <a href="tel:+13105550100">(310) 555-0100</a>
+      </div>
+      <div>
+        <strong>Email</strong>
+        <a href="mailto:hello@pacificmeridian.com">hello@pacificmeridian.com</a>
+      </div>
+      <div>
+        <strong>Address</strong>
+        <span style="color: #475569;">1234 Ocean Ave, Santa Monica, CA</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 The Pacific Meridian Hotel. All rights reserved.</p>
+  <p style="margin-top: 8px;">
+    <a href="#rooms">Rooms</a> &nbsp;·&nbsp;
+    <a href="#contact">Contact</a> &nbsp;·&nbsp;
+    <a href="mailto:hello@pacificmeridian.com">hello@pacificmeridian.com</a>
+  </p>
+</footer>
+
+<!-- ============================================
+     RETELL OFFICIAL WIDGET (Voice + Chat Hybrid)
+     ============================================ -->
+<script
+    id="retell-widget"
+    src="https://dashboard.retellai.com/retell-widget-v2.js"
+    type="module"
+    data-public-key="public_key_48fb86f66d6fa30ca4e49"
+    data-voice-public-key="public_key_48fb86f66d6fa30ca4e49"
+    data-agent-id="agent_20fb6a915440360e4472698b77"
+    data-voice-agent-id="agent_71a4fbab2c00f761ae7054b81b"
+    data-fab-text="Need help?"
+    data-title="Pacific Meridian Receptionist"
+    data-color="#0369a1"
+></script>
+
+</body>
+</html>
