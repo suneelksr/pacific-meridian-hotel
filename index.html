@@ -304,15 +304,25 @@
     if (state === 'active') { retell.stopCall(); return; }
 
     setState('connecting');
-    try {
+        try {
       const res = await fetch('/api/create-call', { method: 'POST' });
       if (!res.ok) throw new Error('Token request failed (' + res.status + ')');
-      const { access_token } = await res.json();
-      await retell.startCall({ accessToken: access_token });
+      
+      // The v3 response returns an object with access_token and other details
+      const connectionDetails = await res.json(); 
+
+      // The new RetellClient.createWebCall() method is used here.
+      // It expects the agent_id and the connection details we just fetched.
+      // Note: The SDK handles the accessToken internally now.
+      await retell.createWebCall({
+        agent_id: 'agent_71a4fbab2c00f761ae7054b81b',
+        ...connectionDetails 
+      });
+
     } catch (err) {
       console.error(err);
       setState('idle');
-      notify('Could not start the call. Please allow microphone access and try again.');
+      notify('Could not start the call. Please try again.');
     }
   }
 

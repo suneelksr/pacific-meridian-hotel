@@ -1,14 +1,13 @@
 export default async () => {
-  // 1. Check if the key is actually loaded
   const apiKey = process.env.RETELL_API_KEY;
   console.log("KEY STATUS:", apiKey ? "Loaded successfully" : "MISSING!");
 
   if (!apiKey) {
-    return new Response(JSON.stringify({ error: "RETELL_API_KEY is missing in Netlify Environment Variables." }), { status: 500 });
+    return new Response(JSON.stringify({ error: "RETELL_API_KEY is missing." }), { status: 500 });
   }
 
-  // 2. Make the request to Retell
-  const res = await fetch("https://api.retellai.com/v2/create-web-call", {
+  // The URL is updated to the v3 endpoint
+  const res = await fetch("https://api.retellai.com/v3/create-web-call", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiKey}`,
@@ -17,7 +16,6 @@ export default async () => {
     body: JSON.stringify({ agent_id: "agent_71a4fbab2c00f761ae7054b81b" }),
   });
 
-  // 3. If Retell fails, send the exact error back to the browser
   if (!res.ok) {
     const errorText = await res.text();
     console.error("RETELL API ERROR:", errorText);
@@ -27,9 +25,10 @@ export default async () => {
     });
   }
 
-  // 4. Success
-  const { access_token } = await res.json();
-  return Response.json({ access_token });
+  // The v3 response contains more fields than just the token.
+  // We pass the entire JSON response back to the browser.
+  const data = await res.json();
+  return Response.json(data);
 };
 
 export const config = { path: "/api/create-call" };
