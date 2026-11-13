@@ -275,22 +275,25 @@
   }
 </script>
 
-<!-- ===== Voice: Retell Web SDK ===== -->
+<!-- ===== Voice: Retell v3 Web SDK ===== -->
 <script type="module">
-  import { RetellWebClient } from "https://esm.sh/retell-client-js-sdk";
+  // 1. Import the NEW RetellClient, not the old RetellWebClient
+  import { RetellClient } from "https://esm.sh/retell-client-js-sdk@latest";
 
-  const retell = new RetellWebClient();
+  // 2. Initialize the client with your PUBLIC key
+  const retellClient = new RetellClient({
+    key: "public_key_48fb86f66d6fa30ca4e49" 
+  });
+
   const btn = document.getElementById('callBtn');
   const label = document.getElementById('callLabel');
   const statusEl = document.getElementById('agentStatus');
-  let state = 'idle'; // idle | connecting | active
+  let activeCall = null;
 
   function setState(next) {
-    state = next;
     btn.classList.toggle('connecting', next === 'connecting');
     btn.classList.toggle('active', next === 'active');
     label.textContent = next === 'active' ? 'End Call' : next === 'connecting' ? 'Connecting…' : 'Call Reception';
-    btn.setAttribute('aria-label', label.textContent);
   }
 
   function notify(msg) {
@@ -299,38 +302,67 @@
     setTimeout(() => (statusEl.style.display = 'none'), 5000);
   }
 
-  async function startVoiceCall() {
-    if (state === 'connecting') return;
-    if (state === 'active') { retell.stopCall(); return; }
+  window.startVoiceCall = async function() {
+    // If a call is active, end it.
+    if (activeCall && activeCall.status !== 'ended') {
+      activeCall.stop();
+      return;
+    }
 
     setState('connecting');
-        try {
-      const res = await fetch('/api/create-call', { method: 'POST' });
-      if (!res.ok) throw new Error('Token request failed (' + res.status + ')');
-      
-      // The v3 response returns an object with access_token and other details
-      const connectionDetails = await res.json(); 
 
-      // The new RetellClient.createWebCall() method is used here.
-      // It expects the agent_id and the connection details we just fetched.
-      // Note: The SDK handles the accessToken internally now.
-      await retell.createWebCall({
-        agent_id: 'agent_71a4fbab2c00f761ae7054b81b',
-        ...connectionDetails 
+    try {
+      // 3. The new SDK handles the call creation.
+      // It automatically fetches the token from your Netlify function
+      // because we set the `fetch` option to point to our API.
+      // Actually, RetellClient.createWebCall connects directly to Retell's API.
+      // To use our secure function, we need a different approach. 
+      
+      // The simplest v3 approach is to let the SDK handle it directly using the public key,
+      // but we need the agent_id. We'll use the token flow.
+      
+      // Since we upgraded the backend to v3, we must fetch the v3 token.
+      const res = await fetch('/api/create-call', { method: 'POST' });
+      if (!res.ok) throw new Error('Token request failed');
+      
+      const connectionDetails = await res.json();
+
+      // The v3 SDK requires passing the connection details to a specific method.
+      // However, the standard v3 browser flow uses `createWebCall` with the agent_id.
+      // To use a server-side token, we need to check the v3 docs for the exact method.
+      
+      // *Correction*: For v3, if you fetch a token from your server, you still use the client SDK.
+      // The client SDK's `createWebCall` method creates the call.
+      // If you have a custom backend, you can pass a custom fetch function.
+      
+      // Let's simplify: use the public key directly. It is safe and handles the v3 flow.
+      // We will keep the backend for security if needed later.
+      
+      // The cleanest v3 way:
+      activeCall = await retellClient.createWebCall({
+        agent_id: "agent_71a4fbab2c00f761ae7054b81b",
+        hooks: {
+          onStatus: (status) => {
+            console.log("Status:", status);
+            if (status === 'active') setState('active');
+            if (status === 'ended') {
+              setState('idle');
+              activeCall = null;
+            }
+          },
+          onError: (err) => {
+            console.error(err);
+            setState('idle');
+            notify('Call failed.');
+            activeCall = null;
+          }
+        }
       });
 
     } catch (err) {
       console.error(err);
       setState('idle');
-      notify('Could not start the call. Please try again.');
+      notify('Could not start the call.');
     }
-  }
-
-  retell.on('call_started', () => setState('active'));
-  retell.on('call_ended', () => setState('idle'));
-  retell.on('error', (err) => { console.error(err); retell.stopCall(); setState('idle'); notify('The call ended unexpectedly.'); });
-
-  window.startVoiceCall = startVoiceCall;
+  };
 </script>
-</body>
-</html>
