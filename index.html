@@ -275,12 +275,10 @@
   }
 </script>
 
-<!-- ===== Voice: Retell v3 Web SDK ===== -->
+<!-- ===== Voice: Retell v3 Web SDK (Fixed) ===== -->
 <script type="module">
-  // 1. Import the NEW RetellClient, not the old RetellWebClient
   import { RetellClient } from "https://esm.sh/retell-client-js-sdk@latest";
 
-  // 2. Initialize the client with your PUBLIC key
   const retellClient = new RetellClient({
     key: "public_key_48fb86f66d6fa30ca4e49" 
   });
@@ -288,7 +286,9 @@
   const btn = document.getElementById('callBtn');
   const label = document.getElementById('callLabel');
   const statusEl = document.getElementById('agentStatus');
-  let activeCall = null;
+  
+  let currentCallId = null;
+  let currentCall = null;
 
   function setState(next) {
     btn.classList.toggle('connecting', next === 'connecting');
@@ -303,66 +303,52 @@
   }
 
   window.startVoiceCall = async function() {
-    // If a call is active, end it.
-    if (activeCall && activeCall.status !== 'ended') {
-      activeCall.stop();
+    // If we are currently in a call, hang it up
+    if (currentCall && currentCall.status !== 'ended') {
+      try {
+        // The new SDK exposes a stop() method on the call object
+        currentCall.stop(); 
+      } catch(e) {
+        console.error("Error stopping call:", e);
+      }
       return;
     }
 
     setState('connecting');
 
     try {
-      // 3. The new SDK handles the call creation.
-      // It automatically fetches the token from your Netlify function
-      // because we set the `fetch` option to point to our API.
-      // Actually, RetellClient.createWebCall connects directly to Retell's API.
-      // To use our secure function, we need a different approach. 
-      
-      // The simplest v3 approach is to let the SDK handle it directly using the public key,
-      // but we need the agent_id. We'll use the token flow.
-      
-      // Since we upgraded the backend to v3, we must fetch the v3 token.
-      const res = await fetch('/api/create-call', { method: 'POST' });
-      if (!res.ok) throw new Error('Token request failed');
-      
-      const connectionDetails = await res.json();
-
-      // The v3 SDK requires passing the connection details to a specific method.
-      // However, the standard v3 browser flow uses `createWebCall` with the agent_id.
-      // To use a server-side token, we need to check the v3 docs for the exact method.
-      
-      // *Correction*: For v3, if you fetch a token from your server, you still use the client SDK.
-      // The client SDK's `createWebCall` method creates the call.
-      // If you have a custom backend, you can pass a custom fetch function.
-      
-      // Let's simplify: use the public key directly. It is safe and handles the v3 flow.
-      // We will keep the backend for security if needed later.
-      
-      // The cleanest v3 way:
-      activeCall = await retellClient.createWebCall({
+      currentCall = await retellClient.createWebCall({
         agent_id: "agent_71a4fbab2c00f761ae7054b81b",
         hooks: {
           onStatus: (status) => {
-            console.log("Status:", status);
-            if (status === 'active') setState('active');
-            if (status === 'ended') {
+            console.log("[Retell] Status:", status);
+            // The call is only truly active when the status is 'active'
+            if (status === 'active') {
+              setState('active');
+            } 
+            if (status === 'ended' || status === 'error') {
               setState('idle');
-              activeCall = null;
+              currentCall = null;
             }
           },
-          onError: (err) => {
-            console.error(err);
+          onEnd: () => {
+            console.log("[Retell] Call ended");
             setState('idle');
-            notify('Call failed.');
-            activeCall = null;
+            currentCall = null;
+          },
+          onError: (err) => {
+            console.error("[Retell] Error:", err);
+            setState('idle');
+            notify('Call failed. Check your connection.');
+            currentCall = null;
           }
         }
       });
-
+      
     } catch (err) {
       console.error(err);
       setState('idle');
-      notify('Could not start the call.');
+      notify('Could not start the call. Please ensure mic access.');
     }
   };
 </script>
