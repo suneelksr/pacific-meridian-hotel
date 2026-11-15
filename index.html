@@ -232,50 +232,6 @@
 </div>
 
 <!-- ===== Chat: Retell chat widget, default bubble hidden ===== -->
-<script
-  id="chat-widget-loader"
-  src="https://dashboard.retellai.com/retell-widget.js"
-  type="module"
-  data-public-key="public_key_48fb86f66d6fa30ca4e49"
-  data-agent-id="agent_20fb6a915440360e4472698b77"
-  data-title="Pacific Meridian Reception"
-  data-bot-name="Reception"
-  data-color="#12324a"
-  data-show-ai-popup="false"
-  data-auto-open="false"></script>
-
-<script>
-  // Finds the widget's own floating bubble and hides it, so only our button is visible.
-  let widgetLauncher = null;
-
-  function findWidgetLauncher() {
-    const roots = document.querySelectorAll('[id*="retell" i], [class*="retell" i]');
-    for (const root of roots) {
-      const scope = root.shadowRoot || root;
-      const btn = scope.matches && scope.matches('button,[role="button"]')
-        ? scope : scope.querySelector('button,[role="button"]');
-      if (btn) return btn;
-    }
-    return null;
-  }
-
-  function hideWidgetLauncher() {
-    if (widgetLauncher) return;
-    const btn = findWidgetLauncher();
-    if (btn) { widgetLauncher = btn; btn.classList.add('hide-launcher'); btn.style.setProperty('visibility', 'hidden', 'important'); }
-  }
-
-  new MutationObserver(hideWidgetLauncher).observe(document.documentElement, { childList: true, subtree: true });
-  window.addEventListener('load', () => setTimeout(hideWidgetLauncher, 800));
-
-  function openChat() {
-    hideWidgetLauncher();
-    if (widgetLauncher) widgetLauncher.click();
-    else console.warn('Chat widget has not loaded yet or its button could not be found.');
-  }
-</script>
-
-<!-- ===== Voice: Retell v3 Web SDK (Fixed) ===== -->
 <script type="module">
   import { RetellClient } from "https://esm.sh/retell-client-js-sdk@latest";
 
@@ -287,7 +243,8 @@
   const label = document.getElementById('callLabel');
   const statusEl = document.getElementById('agentStatus');
   
-  let currentCall = null;
+  let currentCallId = null;
+  let isCalling = false;
 
   function setState(next) {
     btn.classList.toggle('connecting', next === 'connecting');
@@ -302,56 +259,59 @@
   }
 
   window.startVoiceCall = async function() {
-    // 1. If a call exists, end it immediately
-    if (currentCall && typeof currentCall.stop === 'function') {
+    // 1. If we are already in a call, hang it up using the call ID
+    if (isCalling && currentCallId) {
       try {
-        currentCall.stop();
+        await retellClient.stopCall(currentCallId); // Use the correct stop method
       } catch(e) {
         console.error("Error stopping call:", e);
       }
-      // UI will be reset by the onEnd hook below
       return;
     }
 
     setState('connecting');
 
     try {
-      // 2. Create the call and assign it to our variable
       const call = await retellClient.createWebCall({
         agent_id: "agent_71a4fbab2c00f761ae7054b81b",
         hooks: {
           onStatus: (status) => {
             console.log("[Retell] Status:", status);
-            // Only update UI if this status belongs to the active call
-            if (status === 'active' && currentCall) {
-               setState('active');
+            if (status === 'active') {
+              setState('active');
+              isCalling = true;
+            } 
+            if (status === 'ended' || status === 'error') {
+              setState('idle');
+              isCalling = false;
+              currentCallId = null;
             }
           },
           onEnd: () => {
             console.log("[Retell] Call ended");
-            currentCall = null;
             setState('idle');
+            isCalling = false;
+            currentCallId = null;
           },
           onError: (err) => {
             console.error("[Retell] Error:", err);
-            currentCall = null;
             setState('idle');
+            isCalling = false;
+            currentCallId = null;
             notify('Call failed.');
           }
         }
       });
 
-      // 3. IMPORTANT: Assign the call object AFTER creation succeeds
-      currentCall = call;
-      
-      // 4. Force the UI into the active state immediately after creation.
-      // The connection is established, so the user must be able to hang up.
+      // 2. Save the Call ID so we can stop it later
+      currentCallId = call.callId; 
       setState('active');
+      isCalling = true;
 
     } catch (err) {
       console.error(err);
-      currentCall = null;
       setState('idle');
+      isCalling = false;
       notify('Could not start the call.');
     }
   };
