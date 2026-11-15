@@ -232,6 +232,45 @@
 </div>
 
 <!-- ===== Chat: Retell chat widget, default bubble hidden ===== -->
+
+<!-- ===== Chat: Retell Chat Widget ===== -->
+<script
+  id="retell-widget"
+  src="https://dashboard.retellai.com/retell-widget-v2.js"
+  type="module"
+  data-public-key="public_key_48fb86f66d6fa30ca4e49"
+  data-agent-id="agent_20fb6a915440360e4472698b77"
+  data-fab-text="hide"
+  style="display: none;"
+></script>
+
+<script>
+  // Hides the default Retell chat bubble so only our custom buttons show
+  let widgetLauncher = null;
+  function hideWidgetLauncher() {
+    if (widgetLauncher) return;
+    const roots = document.querySelectorAll('[id*="retell" i], [class*="retell" i]');
+    for (const root of roots) {
+      const scope = root.shadowRoot || root;
+      const btn = scope.matches && scope.matches('button,[role="button"]')
+        ? scope : scope.querySelector('button,[role="button"]');
+      if (btn) { 
+        widgetLauncher = btn; 
+        btn.classList.add('hide-launcher'); 
+        btn.style.setProperty('visibility', 'hidden', 'important'); 
+        return;
+      }
+    }
+  }
+  new MutationObserver(hideWidgetLauncher).observe(document.documentElement, { childList: true, subtree: true });
+  window.addEventListener('load', () => setTimeout(hideWidgetLauncher, 800));
+  function openChat() {
+    hideWidgetLauncher();
+    if (widgetLauncher) widgetLauncher.click();
+  }
+</script>
+
+<!-- ===== Voice: Retell Voice SDK ===== -->
 <script type="module">
   import { RetellClient } from "https://esm.sh/retell-client-js-sdk@latest";
 
@@ -259,13 +298,16 @@
   }
 
   window.startVoiceCall = async function() {
-    // 1. If we are already in a call, hang it up using the call ID
+    // 1. If a call is active, stop it using the client
     if (isCalling && currentCallId) {
       try {
-        await retellClient.stopCall(currentCallId); // Use the correct stop method
+        await retellClient.stopCall(currentCallId); 
       } catch(e) {
         console.error("Error stopping call:", e);
       }
+      setState('idle');
+      isCalling = false;
+      currentCallId = null;
       return;
     }
 
@@ -281,14 +323,9 @@
               setState('active');
               isCalling = true;
             } 
-            if (status === 'ended' || status === 'error') {
-              setState('idle');
-              isCalling = false;
-              currentCallId = null;
-            }
           },
           onEnd: () => {
-            console.log("[Retell] Call ended");
+            console.log("[Retell] Call ended from server");
             setState('idle');
             isCalling = false;
             currentCallId = null;
@@ -303,8 +340,10 @@
         }
       });
 
-      // 2. Save the Call ID so we can stop it later
+      // Save the Call ID immediately
       currentCallId = call.callId; 
+      console.log("Call created with ID:", currentCallId);
+      
       setState('active');
       isCalling = true;
 
@@ -316,3 +355,5 @@
     }
   };
 </script>
+</body>
+</html>
