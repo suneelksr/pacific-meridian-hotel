@@ -287,7 +287,6 @@
   const label = document.getElementById('callLabel');
   const statusEl = document.getElementById('agentStatus');
   
-  let currentCallId = null;
   let currentCall = null;
 
   function setState(next) {
@@ -303,52 +302,57 @@
   }
 
   window.startVoiceCall = async function() {
-    // If we are currently in a call, hang it up
-    if (currentCall && currentCall.status !== 'ended') {
+    // 1. If a call exists, end it immediately
+    if (currentCall && typeof currentCall.stop === 'function') {
       try {
-        // The new SDK exposes a stop() method on the call object
-        currentCall.stop(); 
+        currentCall.stop();
       } catch(e) {
         console.error("Error stopping call:", e);
       }
+      // UI will be reset by the onEnd hook below
       return;
     }
 
     setState('connecting');
 
     try {
-      currentCall = await retellClient.createWebCall({
+      // 2. Create the call and assign it to our variable
+      const call = await retellClient.createWebCall({
         agent_id: "agent_71a4fbab2c00f761ae7054b81b",
         hooks: {
           onStatus: (status) => {
             console.log("[Retell] Status:", status);
-            // The call is only truly active when the status is 'active'
-            if (status === 'active') {
-              setState('active');
-            } 
-            if (status === 'ended' || status === 'error') {
-              setState('idle');
-              currentCall = null;
+            // Only update UI if this status belongs to the active call
+            if (status === 'active' && currentCall) {
+               setState('active');
             }
           },
           onEnd: () => {
             console.log("[Retell] Call ended");
-            setState('idle');
             currentCall = null;
+            setState('idle');
           },
           onError: (err) => {
             console.error("[Retell] Error:", err);
-            setState('idle');
-            notify('Call failed. Check your connection.');
             currentCall = null;
+            setState('idle');
+            notify('Call failed.');
           }
         }
       });
+
+      // 3. IMPORTANT: Assign the call object AFTER creation succeeds
+      currentCall = call;
       
+      // 4. Force the UI into the active state immediately after creation.
+      // The connection is established, so the user must be able to hang up.
+      setState('active');
+
     } catch (err) {
       console.error(err);
+      currentCall = null;
       setState('idle');
-      notify('Could not start the call. Please ensure mic access.');
+      notify('Could not start the call.');
     }
   };
 </script>
