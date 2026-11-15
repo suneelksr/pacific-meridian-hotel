@@ -267,6 +267,7 @@
 </script>
 
 <!-- ===== Voice: Retell Voice SDK ===== -->
+<!-- ===== Voice: Retell Voice SDK ===== -->
 <script type="module">
   import { RetellClient } from "https://esm.sh/retell-client-js-sdk@latest";
 
@@ -278,8 +279,7 @@
   const label = document.getElementById('callLabel');
   const statusEl = document.getElementById('agentStatus');
   
-  let currentCallId = null;
-  let isCalling = false;
+  let call = null;
 
   function setState(next) {
     btn.classList.toggle('connecting', next === 'connecting');
@@ -294,59 +294,37 @@
   }
 
   window.startVoiceCall = async function() {
-    if (isCalling && currentCallId) {
-      try {
-        await retellClient.stopCall(currentCallId); 
-      } catch(e) {
-        console.error("Error stopping call:", e);
+    // If a call is active, end it.
+    if (call && call.status !== "ended") {
+      try { 
+        await call.end(); 
+      } catch (e) { 
+        console.error("Error ending call:", e); 
       }
-      setState('idle');
-      isCalling = false;
-      currentCallId = null;
-      return;
+      return; // onEnd will reset the UI
     }
 
-    setState('connecting');
+    setState("connecting");
 
-    try {
-      const call = await retellClient.createWebCall({
-        agent_id: "agent_71a4fbab2c00f761ae7054b81b",
-        hooks: {
-          onStatus: (status) => {
-            console.log("[Retell] Status:", status);
-            if (status === 'active') {
-              setState('active');
-              isCalling = true;
-            } 
-          },
-          onEnd: () => {
-            console.log("[Retell] Call ended from server");
-            setState('idle');
-            isCalling = false;
-            currentCallId = null;
-          },
-          onError: (err) => {
-            console.error("[Retell] Error:", err);
-            setState('idle');
-            isCalling = false;
-            currentCallId = null;
-            notify('Call failed.');
-          }
-        }
-      });
-
-      currentCallId = call.callId; 
-      console.log("Call created with ID:", currentCallId);
-      
-      setState('active');
-      isCalling = true;
-
-    } catch (err) {
-      console.error(err);
-      setState('idle');
-      isCalling = false;
-      notify('Could not start the call.');
-    }
+    call = retellClient.createWebCall({
+      agent_id: "agent_71a4fbab2c00f761ae7054b81b",
+      hooks: {
+        onStatus: (status) => {
+          console.log("[Retell] Status:", status);
+          if (status === "active") setState("active");
+        },
+        onEnd: () => {
+          setState("idle");
+          call = null;
+        },
+        onError: (err) => {
+          console.error("[Retell] Error:", err);
+          setState("idle");
+          call = null;
+          notify("Call failed.");
+        },
+      },
+    });
   };
 </script>
 </body>
