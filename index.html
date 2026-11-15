@@ -231,42 +231,38 @@
   </button>
 </div>
 
-<!-- ===== Chat: Retell chat widget, default bubble hidden ===== -->
+<!-- ===== Chat: Retell Chat Widget (Hidden) ===== -->
+<style>
+  /* Force hide the default Retell floating bubble */
+  #retell-widget, .retell-widget-launcher, [class*="retell"][id*="launcher"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+</style>
 
-<!-- ===== Chat: Retell Chat Widget ===== -->
 <script
   id="retell-widget"
   src="https://dashboard.retellai.com/retell-widget-v2.js"
   type="module"
   data-public-key="public_key_48fb86f66d6fa30ca4e49"
   data-agent-id="agent_20fb6a915440360e4472698b77"
-  data-fab-text="hide"
-  style="display: none;"
 ></script>
 
 <script>
-  // Hides the default Retell chat bubble so only our custom buttons show
-  let widgetLauncher = null;
-  function hideWidgetLauncher() {
-    if (widgetLauncher) return;
-    const roots = document.querySelectorAll('[id*="retell" i], [class*="retell" i]');
-    for (const root of roots) {
-      const scope = root.shadowRoot || root;
-      const btn = scope.matches && scope.matches('button,[role="button"]')
-        ? scope : scope.querySelector('button,[role="button"]');
-      if (btn) { 
-        widgetLauncher = btn; 
-        btn.classList.add('hide-launcher'); 
-        btn.style.setProperty('visibility', 'hidden', 'important'); 
-        return;
-      }
-    }
-  }
-  new MutationObserver(hideWidgetLauncher).observe(document.documentElement, { childList: true, subtree: true });
-  window.addEventListener('load', () => setTimeout(hideWidgetLauncher, 800));
+  // Logic to open the hidden widget when the custom button is clicked
   function openChat() {
-    hideWidgetLauncher();
-    if (widgetLauncher) widgetLauncher.click();
+    // Find the Retell widget iframe or shadow root button and click it
+    const retellWidget = document.getElementById('retell-widget');
+    if (retellWidget && retellWidget.shadowRoot) {
+      const btn = retellWidget.shadowRoot.querySelector('button');
+      if (btn) btn.click();
+    } else {
+      // Fallback: try clicking the custom element
+      const customBtn = document.querySelector('.retell-widget-launcher');
+      if (customBtn) customBtn.click();
+    }
   }
 </script>
 
@@ -298,7 +294,6 @@
   }
 
   window.startVoiceCall = async function() {
-    // 1. If a call is active, stop it using the client
     if (isCalling && currentCallId) {
       try {
         await retellClient.stopCall(currentCallId); 
@@ -340,7 +335,6 @@
         }
       });
 
-      // Save the Call ID immediately
       currentCallId = call.callId; 
       console.log("Call created with ID:", currentCallId);
       
