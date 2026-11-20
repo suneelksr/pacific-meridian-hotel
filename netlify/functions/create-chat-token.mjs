@@ -1,12 +1,17 @@
 export default async (req) => {
-  try {
-    const apiKey = process.env.RETELL_API_KEY;
-    if (!apiKey) {
-      return new Response(JSON.stringify({ error: "Missing API Key" }), { status: 500 });
-    }
+  const apiKey = process.env.RETELL_API_KEY;
+  if (!apiKey) {
+    return new Response(JSON.stringify({ error: "Missing API Key" }), { 
+      status: 500, headers: { "Content-Type": "application/json" } 
+    });
+  }
 
-    if (req.method === "POST" && !req.body) {
-      // Create Chat
+  // 1. Handle creating a new chat session
+  if (req.method === "POST") {
+    const contentType = req.headers.get("content-type") || "";
+    
+    // If there is no content-type (or it's empty), it's a request to start a chat
+    if (!contentType.includes("application/json")) {
       const res = await fetch("https://api.retellai.com/v2/create-chat", {
         method: "POST",
         headers: {
@@ -17,16 +22,15 @@ export default async (req) => {
       });
       
       if (!res.ok) {
-        const errText = await res.text();
-        console.error("RETELL CREATE CHAT ERROR:", errText);
-        return new Response(errText, { status: 502 });
+        return new Response(await res.text(), { status: res.status });
       }
       return Response.json(await res.json());
     }
 
-    if (req.method === "POST" && req.body) {
-      // Send Message
-      const body = JSON.parse(req.body);
+    // 2. Handle sending a message (has JSON body)
+    try {
+      const body = await req.json();
+      
       const res = await fetch("https://api.retellai.com/v2/create-chat-completion", {
         method: "POST",
         headers: {
@@ -40,22 +44,18 @@ export default async (req) => {
       });
 
       if (!res.ok) {
-        const errText = await res.text();
-        console.error("RETELL SEND MESSAGE ERROR:", errText);
-        return new Response(errText, { status: 502 });
+        return new Response(await res.text(), { status: res.status });
       }
       return Response.json(await res.json());
+      
+    } catch (e) {
+      return new Response(JSON.stringify({ error: "Bad Request" }), { 
+        status: 400, headers: { "Content-Type": "application/json" } 
+      });
     }
-
-    return new Response("Method Not Allowed", { status: 405 });
-
-  } catch (error) {
-    console.error("CATCH BLOCK ERROR:", error.message);
-    return new Response(JSON.stringify({ error: error.message }), { 
-      status: 500,
-      headers: { "Content-Type": "application/json" }
-    });
   }
+
+  return new Response("Method Not Allowed", { status: 405 });
 };
 
 export const config = { path: "/api/create-chat" };
