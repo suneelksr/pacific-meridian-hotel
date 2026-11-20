@@ -231,41 +231,6 @@
   </button>
 </div>
 
-<!-- ===== Chat: Retell Chat Widget (Hidden) ===== -->
-<style>
-  /* Force hide the default Retell floating bubble */
-  #retell-widget, .retell-widget-launcher, [class*="retell"][id*="launcher"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-  }
-</style>
-
-<script
-  id="retell-widget"
-  src="https://dashboard.retellai.com/retell-widget-v2.js"
-  type="module"
-  data-public-key="public_key_48fb86f66d6fa30ca4e49"
-  data-agent-id="agent_20fb6a915440360e4472698b77"
-></script>
-
-<script>
-  // Logic to open the hidden widget when the custom button is clicked
-  function openChat() {
-    // Find the Retell widget iframe or shadow root button and click it
-    const retellWidget = document.getElementById('retell-widget');
-    if (retellWidget && retellWidget.shadowRoot) {
-      const btn = retellWidget.shadowRoot.querySelector('button');
-      if (btn) btn.click();
-    } else {
-      // Fallback: try clicking the custom element
-      const customBtn = document.querySelector('.retell-widget-launcher');
-      if (customBtn) customBtn.click();
-    }
-  }
-</script>
-
 <!-- ===== Voice: Retell Voice SDK ===== -->
 <script type="module">
   import { RetellClient } from "https://esm.sh/retell-client-js-sdk@latest";
@@ -326,5 +291,25 @@
     });
   };
 </script>
+<!-- ===== Chat: Embedded Retell Widget ===== -->
+<div id="chat-panel" style="display:none; position:fixed; right:24px; bottom:100px; width:380px; height:560px; z-index:9999; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; border: 1px solid #ddd;">
+  <div 
+    data-retell-widget="true"
+    data-public-key="public_key_48fb86f66d6fa30ca4e49"
+    data-agent-id="agent_20fb6a915440360e4472698b77"
+    style="height:100%"
+  ></div>
+</div>
+
+<script src="https://dashboard.retellai.com/retell-widget-embed.js"></script>
+
+<script>
+  function openChat() {
+    const p = document.getElementById("chat-panel");
+    // This toggles the chat window open and closed
+    p.style.display = p.style.display === "none" ? "block" : "none";
+  }
+</script>
+
 </body>
 </html>
