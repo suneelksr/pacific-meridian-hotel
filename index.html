@@ -312,24 +312,108 @@
     }
   };
 </script>
-<!-- ===== Chat: Embedded Retell Widget ===== -->
-<div id="chat-panel" style="display:none; position:fixed; right:24px; bottom:100px; width:380px; height:560px; z-index:9999; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; border: 1px solid #ddd;">
-  <div 
-    data-retell-widget="true"
-    data-public-key="public_key_48fb86f66d6fa30ca4e49"
-    data-agent-id="agent_20fb6a915440360e4472698b77"
-    style="height:100%"
-  ></div>
+<!-- ===== Chat: Custom UI ===== -->
+<div id="chat-panel" style="display:none; position:fixed; right:24px; bottom:100px; width:380px; height:550px; z-index:9999; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border-radius: 12px; overflow: hidden; border: 1px solid #ddd; background: white; display: flex; flex-direction: column;">
+  
+  <!-- Custom Header -->
+  <div style="background: #12324a; color: white; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+    <span style="font-family: 'Jost', sans-serif; font-size: 16px; font-weight: 500;">The Pacific Meridian</span>
+    <button onclick="openChat()" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">&times;</button>
+  </div>
+
+  <!-- Chat Messages Area -->
+  <div id="chat-messages" style="flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f9f9f9;">
+    <!-- Messages will appear here -->
+  </div>
+
+  <!-- Chat Input Area -->
+  <div style="padding: 12px; border-top: 1px solid #eee; display: flex; gap: 8px; background: white;">
+    <input id="chat-input" type="text" placeholder="Type your message..." style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 20px; outline: none; font-family: 'Jost', sans-serif;" />
+    <button onclick="sendChatMessage()" style="background: #2f7f86; color: white; border: none; padding: 10px 16px; border-radius: 20px; cursor: pointer; font-weight: 600;">Send</button>
+  </div>
 </div>
 
-<script src="https://dashboard.retellai.com/retell-widget-embed.js"></script>
-
 <script>
+  let chatId = null;
+
   function openChat() {
     const p = document.getElementById("chat-panel");
-    // This toggles the chat window open and closed
-    p.style.display = p.style.display === "none" ? "block" : "none";
+    if (p.style.display === "none" || p.style.display === "") {
+      p.style.display = "flex";
+      document.getElementById('chat-input').focus();
+    } else {
+      p.style.display = "none";
+    }
   }
+
+  function addMessage(text, sender) {
+    const msgDiv = document.createElement('div');
+    msgDiv.style.maxWidth = '80%';
+    msgDiv.style.padding = '10px 14px';
+    msgDiv.style.borderRadius = '12px';
+    msgDiv.style.fontSize = '15px';
+    msgDiv.style.lineHeight = '1.4';
+    msgDiv.style.fontFamily = "'Jost', sans-serif";
+    
+    if (sender === 'user') {
+      msgDiv.style.background = '#2f7f86';
+      msgDiv.style.color = 'white';
+      msgDiv.style.alignSelf = 'flex-end';
+      msgDiv.style.borderBottomRightRadius = '2px';
+    } else {
+      msgDiv.style.background = 'white';
+      msgDiv.style.color = '#1d2a33';
+      msgDiv.style.alignSelf = 'flex-start';
+      msgDiv.style.borderBottomLeftRadius = '2px';
+      msgDiv.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+    }
+    
+    msgDiv.textContent = text;
+    document.getElementById('chat-messages').appendChild(msgDiv);
+    document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+  }
+
+   async function sendChatMessage() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage(text, 'user');
+    input.value = '';
+
+    try {
+      // If we don't have a chat ID yet, create a new chat session
+      if (!chatId) {
+        const res = await fetch('/api/create-chat', { method: 'POST' });
+        const data = await res.json();
+        chatId = data.chat_id;
+      }
+
+      // Send message through our secure backend function
+      const res = await fetch('/api/create-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          content: text
+        })
+      });
+
+      if (!res.ok) throw new Error("Failed to send");
+      
+      const data = await res.json();
+      addMessage(data.content, 'bot');
+
+    } catch (err) {
+      console.error(err);
+      addMessage("Sorry, I'm having trouble connecting right now.", 'bot');
+    }
+  }
+
+  // Allow pressing Enter to send
+  document.getElementById('chat-input').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') sendChatMessage();
+  });
 </script>
 
 </body>
