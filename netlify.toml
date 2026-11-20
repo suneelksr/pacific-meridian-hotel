@@ -1,0 +1,6 @@
+[functions]
+  node_bundler = "esbuild"
+
+[functions.create-chat-token]
+  [functions.create-chat-token.esbuild]
+    format = "esm"
