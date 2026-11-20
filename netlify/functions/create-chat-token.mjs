@@ -6,11 +6,10 @@ export default async (req) => {
     });
   }
 
-  // 1. Handle creating a new chat session
   if (req.method === "POST") {
     const contentType = req.headers.get("content-type") || "";
     
-    // If there is no content-type (or it's empty), it's a request to start a chat
+    // 1. Create a new chat session (No JSON body)
     if (!contentType.includes("application/json")) {
       const res = await fetch("https://api.retellai.com/v2/create-chat", {
         method: "POST",
@@ -27,7 +26,7 @@ export default async (req) => {
       return Response.json(await res.json());
     }
 
-    // 2. Handle sending a message (has JSON body)
+    // 2. Send a message to the chat (Has JSON body)
     try {
       const body = await req.json();
       
