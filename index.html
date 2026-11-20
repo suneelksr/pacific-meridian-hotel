@@ -384,13 +384,13 @@
     try {
       // If we don't have a chat ID yet, create a new chat session
       if (!chatId) {
-        const res = await fetch('/api/create-chat', { method: 'POST' });
+        const res = await fetch('/.netlify/functions/create-chat-token', { method: 'POST' });
         const data = await res.json();
         chatId = data.chat_id;
       }
 
       // Send message through our secure backend function
-      const res = await fetch('/api/create-chat', {
+      const res = await fetch('/.netlify/functions/create-chat-token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

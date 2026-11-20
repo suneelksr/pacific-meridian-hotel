@@ -57,4 +57,3 @@ export default async (req) => {
   return new Response("Method Not Allowed", { status: 405 });
 };
 
-export const config = { path: "/api/create-chat" };
