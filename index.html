@@ -258,37 +258,58 @@
   }
 
   window.startVoiceCall = async function() {
-    // If a call is active, end it.
+    // If a call is already active, end it immediately
     if (call && call.status !== "ended") {
       try { 
         await call.end(); 
       } catch (e) { 
         console.error("Error ending call:", e); 
       }
-      return; // onEnd will reset the UI
+      setState("idle");
+      call = null;
+      return;
     }
 
+    // Change UI to "Connecting..." immediately
     setState("connecting");
 
-    call = retellClient.createWebCall({
-      agent_id: "agent_71a4fbab2c00f761ae7054b81b",
-      hooks: {
-        onStatus: (status) => {
-          console.log("[Retell] Status:", status);
-          if (status === "active") setState("active");
+    try {
+      call = retellClient.createWebCall({
+        agent_id: "agent_71a4fbab2c00f761ae7054b81b",
+        hooks: {
+          onStatus: (status) => {
+            console.log("[Retell] Status:", status);
+            // When status is active OR when it's the final event, show End Call
+            if (status === "active") {
+              setState("active");
+            }
+          },
+          onEnd: () => {
+            setState("idle");
+            call = null;
+          },
+          onError: (err) => {
+            console.error("[Retell] Error:", err);
+            setState("idle");
+            call = null;
+            notify("Call failed.");
+          },
         },
-        onEnd: () => {
-          setState("idle");
-          call = null;
-        },
-        onError: (err) => {
-          console.error("[Retell] Error:", err);
-          setState("idle");
-          call = null;
-          notify("Call failed.");
-        },
-      },
-    });
+      });
+
+      // Force the button to "active" (red) right after creation
+      // This ensures if the hook is delayed, the user isn't stuck.
+      setTimeout(() => {
+        if (call && call.status !== "ended") {
+          setState("active");
+        }
+      }, 1000); // Give it 1 second to connect, then force the red state
+
+    } catch (err) {
+      console.error(err);
+      setState("idle");
+      notify("Could not start the call.");
+    }
   };
 </script>
 <!-- ===== Chat: Embedded Retell Widget ===== -->
