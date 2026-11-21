@@ -10,9 +10,9 @@ export default async (req) => {
     if (req.method === "POST") {
       const contentType = req.headers.get("content-type") || "";
       
-      // 1. Create Chat
+      // 1. Create Chat (NOT /v2/)
       if (!contentType.includes("application/json")) {
-        const res = await fetch("https://api.retellai.com/v2/create-chat", {
+        const res = await fetch("https://api.retellai.com/create-chat", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${apiKey}`,
@@ -26,9 +26,9 @@ export default async (req) => {
         return new Response(text, { status: 200, headers: { "Content-Type": "application/json" } });
       }
 
-      // 2. Send Message
+      // 2. Send Message (NOT /v2/)
       const body = await req.json();
-      const res = await fetch("https://api.retellai.com/v2/create-chat-completion", {
+      const res = await fetch("https://api.retellai.com/create-chat-completion", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${apiKey}`,
@@ -49,7 +49,6 @@ export default async (req) => {
     return new Response(JSON.stringify({ error: "Method Not Allowed" }), { status: 405 });
 
   } catch (error) {
-    // This will catch ANY crash and send it to the browser as JSON
     return new Response(JSON.stringify({ error: error.message }), { 
       status: 500, 
       headers: { "Content-Type": "application/json" } 
