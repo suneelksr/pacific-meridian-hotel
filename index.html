@@ -381,7 +381,7 @@
     addMessage(text, 'user');
     input.value = '';
 
-    try {
+        try {
       // If we don't have a chat ID yet, create a new chat session
       if (!chatId) {
         const res = await fetch('/.netlify/functions/create-chat-token', { method: 'POST' });
@@ -402,7 +402,20 @@
       if (!res.ok) throw new Error("Failed to send");
       
       const data = await res.json();
-      addMessage(data.content, 'bot');
+      
+      // --- THIS IS THE FIX ---
+      // Log the exact response to the console so we can see it
+      console.log("Retell Response:", data);
+
+      // Grab the very last message in the array (which is the bot's reply)
+      if (data.messages && data.messages.length > 0) {
+        const lastMessage = data.messages[data.messages.length - 1];
+        addMessage(lastMessage.content, 'bot');
+      } else if (data.content) {
+        // Fallback just in case it returns a single string
+        addMessage(data.content, 'bot');
+      }
+      // -----------------------
 
     } catch (err) {
       console.error(err);
