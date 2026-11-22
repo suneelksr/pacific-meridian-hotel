@@ -381,7 +381,7 @@
     addMessage(text, 'user');
     input.value = '';
 
-        try {
+    try {
       // If we don't have a chat ID yet, create a new chat session
       if (!chatId) {
         const res = await fetch('/.netlify/functions/create-chat-token', { method: 'POST' });
@@ -403,19 +403,35 @@
       
       const data = await res.json();
       
-      // --- THIS IS THE FIX ---
-      // Log the exact response to the console so we can see it
-      console.log("Retell Response:", data);
-
-      // Grab the very last message in the array (which is the bot's reply)
+      // --- FIX: Loop through ALL returned messages and check for end_call ---
+      let ended = false;
+      
       if (data.messages && data.messages.length > 0) {
-        const lastMessage = data.messages[data.messages.length - 1];
-        addMessage(lastMessage.content, 'bot');
-      } else if (data.content) {
-        // Fallback just in case it returns a single string
-        addMessage(data.content, 'bot');
+        for (const msg of data.messages) {
+          // If it's a text message from the agent, show it
+          if (msg.role === "agent" && msg.content && msg.content.trim() !== "") {
+            addMessage(msg.content, 'bot');
+          }
+          // If the agent triggered the end_call tool, mark the chat as ended
+          if (msg.role === "tool_call_invocation" && msg.name === "end_call") {
+            ended = true;
+          }
+        }
       }
-      // -----------------------
+
+      // If the call ended, disable the chat input
+      if (ended) {
+        const input = document.getElementById('chat-input');
+        const sendBtn = document.querySelector('button[onclick="sendChatMessage()"]');
+        
+        input.disabled = true;
+        input.placeholder = "Conversation ended. Refresh to start over.";
+        input.style.background = '#eee';
+        
+        sendBtn.disabled = true;
+        sendBtn.style.background = '#ccc';
+        sendBtn.style.cursor = 'not-allowed';
+      }
 
     } catch (err) {
       console.error(err);

@@ -10,7 +10,7 @@ export default async (req) => {
     if (req.method === "POST") {
       const contentType = req.headers.get("content-type") || "";
       
-      // 1. Create Chat (NOT /v2/)
+      // 1. Create Chat
       if (!contentType.includes("application/json")) {
         const res = await fetch("https://api.retellai.com/create-chat", {
           method: "POST",
@@ -26,7 +26,7 @@ export default async (req) => {
         return new Response(text, { status: 200, headers: { "Content-Type": "application/json" } });
       }
 
-      // 2. Send Message (NOT /v2/)
+      // 2. Send Message - Pass the entire JSON object back
       const body = await req.json();
       const res = await fetch("https://api.retellai.com/create-chat-completion", {
         method: "POST",
@@ -43,6 +43,7 @@ export default async (req) => {
       const text = await res.text();
       if (!res.ok) throw new Error(`Retell Message Error: ${res.status} - ${text}`);
       
+      // Return the full raw response from Retell (contains the messages array)
       return new Response(text, { status: 200, headers: { "Content-Type": "application/json" } });
     }
 
