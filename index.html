@@ -403,35 +403,21 @@
       
       const data = await res.json();
       
-      // --- FIX: Loop through ALL returned messages and check for end_call ---
+      // Loop through ALL returned messages
       let ended = false;
       
       if (data.messages && data.messages.length > 0) {
         for (const msg of data.messages) {
-          // If it's a text message from the agent, show it
           if (msg.role === "agent" && msg.content && msg.content.trim() !== "") {
             addMessage(msg.content, 'bot');
           }
-          // If the agent triggered the end_call tool, mark the chat as ended
           if (msg.role === "tool_call_invocation" && msg.name === "end_call") {
-            ended = true;
+            ended = true; // We still detect it, but we don't disable the input anymore
           }
         }
       }
 
-      // If the call ended, disable the chat input
-      if (ended) {
-        const input = document.getElementById('chat-input');
-        const sendBtn = document.querySelector('button[onclick="sendChatMessage()"]');
-        
-        input.disabled = true;
-        input.placeholder = "Conversation ended. Refresh to start over.";
-        input.style.background = '#eee';
-        
-        sendBtn.disabled = true;
-        sendBtn.style.background = '#ccc';
-        sendBtn.style.cursor = 'not-allowed';
-      }
+      // REMOVED THE BLOCK THAT DISABLES THE INPUT HERE
 
     } catch (err) {
       console.error(err);
